@@ -87,7 +87,7 @@ void fill_ship(bool random, int m[10][10]) {
 	char symbol[4] = { 'n', 'e', 's', 'w' };
 	if (random) {
 		while (cnt != 1) {
-			if (correct_ship_and_fill_random_array(rand() % 10, rand() % 10,symbol[rand() % 4], 4, m)) {
+			if (correct_ship_and_fill_random_array(rand() % 10, rand() % 10, symbol[rand() % 4], 4, m)) {
 				cnt++;
 			}
 		}
