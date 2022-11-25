@@ -44,6 +44,8 @@ bool correct_ship_and_fill_random_array(int x, int y, char a, int size, int m[10
 				return false;
 			m[y + i][x] = size;
 		}
+
+
 		break;
 	case 'w':
 		if (x - size + 1 < 0)
