@@ -128,6 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SeaBattle.cpp" />
+    <ClCompile Include="SeaWar.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SeaBattle.h" />
+    <ClInclude Include="SeaWar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

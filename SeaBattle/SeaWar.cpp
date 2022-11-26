@@ -1,32 +1,47 @@
-ï»¿#include <iostream>
-#include <windows.h>
-#include <cstdlib>
-#include <string>
 #include "SeaWar.h"
-#include "SeaBattle.h"
-using namespace std;
 
-bool check_cnt_ship(int a[5]) {
+SeaWar::SeaWar() {
+	start_map();
+	//fill_ship(true, player1_ship, cnt_ship_1);
+}
+
+bool SeaWar::check_cnt_ship(int a[5], int size) {
+	a[size]++;
 	if (a[1] <= 4 && a[2] <= 3 && a[3] <= 2 && a[4] <= 1)
 		return true;
 	return false;
 }
-void start_map() {
+bool SeaWar::correct_cnt_ship(int a[5]) {
+	if (a[1] == 4 && a[2] == 3 && a[3] == 2 && a[4] == 1)
+		return true;
+	return false;
+}
+
+void SeaWar::print_field() {
+	for (int i = 0; i < )
+}
+
+void SeaWar::start_map() {
 	for (int i = 0; i < 12; i++) {
 		if (i != 0 && i != 11)
-			cout << i - 1;
+			field[i][0] = to_string((i - 1))[0];
+			//cout << i - 1;
+
 
 		for (int j = 0; j < 11; j++) {
 			if (i == 0 && j == 0)
-				cout << " ";
+				cout << "";
 			else if (i == 0 && j != 10)
-				cout << j;
+				field[0][j + 1] = to_string((j))[0];
+				//cout << j;
 			else if (j == 9 && i != 0)
-				cout << "#";
+				field[i][j] = '#';
+				//cout << "#";
 			else if (i == 11 && j != 0 && j != 10)
-				cout << "#";
-			else
-				cout << " ";
+				field[i][j] = '#';
+				//cout << "#";
+			//else
+				//cout << " ";
 
 		}
 
@@ -37,7 +52,8 @@ void start_map() {
 		cout << endl;
 	}
 }
-bool correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], int cnt1[5]) {
+
+bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], int cnt1[5]) {
 	int x0, y0, x1, y1;
 
 	x0 = x - 1;
@@ -46,7 +62,7 @@ bool correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], 
 	y1 = y + 1;
 
 	cnt1[size]++;
-	if (!(check_cnt_ship(cnt1)))
+	if (!(check_cnt_ship(cnt1, size)))
 		return false;
 	cnt1[size]--;
 
@@ -126,17 +142,14 @@ bool correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], 
 	cnt1[size]++;
 	return true;
 }
-bool correct_cnt_ship(int a[5]) {
-	if (a[1] == 4 && a[2] == 3 && a[3] == 2 && a[4] == 1)
-		return true;
-	return false;
-}
-bool check_way(string s) {
+
+bool SeaWar::check_way(string s) {
 	if (s.length() == 1 && (s[0] == 'e' || s[0] == 's' || s[0] == 'w' || s[0] == 'n'))
 		return true;
 	return false;
 }
-void fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
+
+void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
 	int cnt = 0;
 	char symbol[4] = { 'n', 'e', 's', 'w' };
 	if (random) {
@@ -160,17 +173,17 @@ void fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
 	else {
 		int x0, y0, size;
 		char way[10];
-		cout << "Ð’Ñ‹ Ð²Ñ‹Ð±Ñ€Ð°Ð»Ð¸ ÑÐ°Ð¼Ð¾ÑÑ‚Ð¾ÑÑ‚ÐµÐ»ÑŒÐ½Ð¾Ðµ Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¸Ðµ Ð¿Ð¾Ð»Ñ" << endl;
+		cout << "Âû âûáðàëè ñàìîñòîÿòåëüíîå çàïîëíåíèå ïîëÿ" << endl;
 		while (!correct_cnt_ship(cnt_ship)) {
-			cout << "Ð”Ð°Ð½Ð½Ñ‹Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ: ";
-			//cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ(x, y),\nÐ¿Ð°Ð»ÑƒÐ±Ð½Ð¾ÑÑ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ(Ð¾Ñ‚ 1 Ð´Ð¾ 4), \nÐ½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ Ð¾Ñ‚ Ð´Ð°Ð½Ð½Ñ‹Ñ… ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚(w, e, n Ð¸Ð»Ð¸ s) (w-west(Ð½Ð°Ð»ÐµÐ²Ð¾), e-east(Ð½Ð°Ð¿Ñ€Ð°Ð²Ð¾), n-north(Ð½Ð°Ð²Ð²ÐµÑ€Ñ…), s-south(Ð²Ð½Ð¸Ð·):";
+			cout << "Äàííûå êîðàáëÿ: ";
+			//cout << "Ââåäèòå êîîðäèíàòû êîðàáëÿ(x, y),\nïàëóáíîñòü êîðàáëÿ(îò 1 äî 4), \níàïðàâëåíèå êîðàáëÿ îò äàííûõ êîîðäèíàò(w, e, n èëè s) (w-west(íàëåâî), e-east(íàïðàâî), n-north(íàââåðõ), s-south(âíèç):";
 			while (!(cin >> x0) ||
 				!(cin >> y0) ||
 				!(cin >> size) ||
 				!(x0 >= 0) ||
 				!(x0 <= 9) ||
 				!(y0 >= 0) ||
-				!(y0 <= 9) || 
+				!(y0 <= 9) ||
 				!(size <= 4) ||
 				!(size >= 0) ||
 				!(cin >> way) ||
@@ -179,45 +192,19 @@ void fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
 
 				cin.clear();
 				cin.ignore();
-				//cout << "Ð’Ñ‹ ÑÐ¾Ð²ÐµÑ€ÑˆÐ¸Ð»Ð¸ Ð¾ÑˆÐ¸Ð±ÐºÑƒ, Ð²Ñ‹Ð±Ñ€Ð°Ð² Ð½ÐµÐ¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚ Ð²Ð²ÐµÐ´ÐµÐ½Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ…, Ð¸Ð»Ð¸ Ð¿Ñ€ÐµÐ²Ñ‹ÑˆÐ°ÐµÑ‚Ðµ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ð¾Ðµ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ ÐºÐ¾Ñ€Ð°Ð±Ð»ÐµÐ¹ Ð¾Ð´Ð½Ð¾Ð³Ð¾ Ð²Ð¸Ð´Ð° !" << endl;
-				cout << "Ð’Ñ‹ ÑÐ¾Ð²ÐµÑ€ÑˆÐ¸Ð»Ð¸ Ð¾ÑˆÐ¸Ð±ÐºÑƒ!!!----------------------" << endl;
-				//cout << "Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚Ñ‹ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ(x, y), \nÐ½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ Ð¾Ñ‚ Ð´Ð°Ð½Ð½Ñ‹Ñ… ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð°Ñ‚(w, e, n Ð¸Ð»Ð¸ s) (w-west(Ð½Ð°Ð»ÐµÐ²Ð¾), e-east(Ð½Ð°Ð¿Ñ€Ð°Ð²Ð¾), n-north(Ð½Ð°Ð²Ð²ÐµÑ€Ñ…), s-south(Ð²Ð½Ð¸Ð·),\nÐ¿Ð°Ð»ÑƒÐ±Ð½Ð¾ÑÑ‚ÑŒ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ(Ð¾Ñ‚ 1 Ð´Ð¾ 4):";
-				cout << "Ð”Ð°Ð½Ð½Ñ‹Ðµ ÐºÐ¾Ñ€Ð°Ð±Ð»Ñ: ";
+				//cout << "Âû ñîâåðøèëè îøèáêó, âûáðàâ íåïðàâèëüíûé ôîðìàò ââåäåíûõ äàííûõ, èëè ïðåâûøàåòå íåîáõîäèìîå êîëè÷åñòâî êîðàáëåé îäíîãî âèäà !" << endl;
+				cout << "Âû ñîâåðøèëè îøèáêó!!!----------------------" << endl;
+				//cout << "Ââåäèòå êîîðäèíàòû êîðàáëÿ(x, y), \níàïðàâëåíèå êîðàáëÿ îò äàííûõ êîîðäèíàò(w, e, n èëè s) (w-west(íàëåâî), e-east(íàïðàâî), n-north(íàââåðõ), s-south(âíèç),\nïàëóáíîñòü êîðàáëÿ(îò 1 äî 4):";
+				cout << "Äàííûå êîðàáëÿ: ";
 			}
 		}
 		cout << endl;
-		cout << "ÐŸÐ¾Ð»Ðµ Ð·Ð°Ð¿Ð¾Ð»Ð½ÐµÐ½Ð¾";
+		cout << "Ïîëå çàïîëíåíî";
 	}
 }
 
-//int main() {
-//	setlocale(LC_ALL, "ru");
-//	srand(time(0));
-//
-//	int player1_ship[10][10] = { 0 };
-//	int player2_ship[10][10] = { 0 };
-//	int player1_attack[10][10] = { 0 };
-//	int player2_attack[10][10] = { 0 };
-//	int cnt_ship[5] = { 0 };
-//
-//
-//	start_map();
-//	fill_ship(false, player1_ship, cnt_ship);
-//
-//	cout << (char)(219);
-//
-//
-//}
 
 
-int main() {
-	setlocale(LC_ALL, "ru");
-	srand(time(0));
-
-	SeaWar a = SeaWar();
 
 
-	cout << (char)(219);
 
-
-}
