@@ -1,14 +1,77 @@
 #include "SeaWar.h"
 
 SeaWar::SeaWar() {
-	start_map();
-	//fill_ship(true, player1_ship, cnt_ship_1);
+
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 12; j++) {
+			field_1[i][j] = ' ';
+			field_2[i][j] = ' ';
+			field_attack_1[i][j] = ' ';
+			field_attack_2[i][j] = ' ';
+		}
+	}
+
+	mode_selection_fill();
+	first_move();
+	start_map(field_1);
+	start_map(field_2);
+	start_map(field_attack_1);
+	start_map(field_attack_2);
+
+	fill_ship(true, player2_ship, cnt_ship_2, field_2);
+	fill_ship(is_random_field, player1_ship, cnt_ship_1, field_1);
+
+	print_field(field_1, field_attack_1);
+	//print_field(field_2);
+
 }
 
+void SeaWar::mode_selection_fill() {
+	cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
+	while (!(cin >> is_random_field)) {
+		cin.clear();
+		cin.ignore();
+		system("cls");
+		cout << "Вы допустили ошибку!" << endl;
+		cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
+	}
+}
+void SeaWar::first_move() {
+	cout << "Вы ходите первым? (true-да, false-нет): ";
+	while (!(cin >> player_move)) {
+		cin.clear();
+		cin.ignore();
+
+		system("cls");
+		cout << "Вы допустили ошибку!" << endl;
+		cout << "Вы ходите первым? (true-да, false-нет): ";
+
+	}
+	system("cls");
+}
+
+void SeaWar::start_map(char a[12][12]) {
+	for (int i = 1; i < 11; i++) {
+		for (int j = 0; j < 12; j++)
+			a[i][j] = ' ';
+
+		a[0][i] = to_string((i - 1))[0];
+		a[i][0] = to_string((i - 1))[0];
+
+		a[i][11] = '|';
+		a[11][i] = '–';
+	}
+	a[11][0] = 'Y';
+	a[0][11] = 'X';
+	a[11][11] = '-';
+}
 bool SeaWar::check_cnt_ship(int a[5], int size) {
 	a[size]++;
-	if (a[1] <= 4 && a[2] <= 3 && a[3] <= 2 && a[4] <= 1)
+	if (a[1] <= 4 && a[2] <= 3 && a[3] <= 2 && a[4] <= 1) {
+		a[size]--;
 		return true;
+	}
+	a[size]--;
 	return false;
 }
 bool SeaWar::correct_cnt_ship(int a[5]) {
@@ -16,44 +79,30 @@ bool SeaWar::correct_cnt_ship(int a[5]) {
 		return true;
 	return false;
 }
-
-void SeaWar::print_field() {
-	for (int i = 0; i < )
-}
-
-void SeaWar::start_map() {
+void SeaWar::print_field(char f[12][12]) {
 	for (int i = 0; i < 12; i++) {
-		if (i != 0 && i != 11)
-			field[i][0] = to_string((i - 1))[0];
-			//cout << i - 1;
-
-
-		for (int j = 0; j < 11; j++) {
-			if (i == 0 && j == 0)
-				cout << "";
-			else if (i == 0 && j != 10)
-				field[0][j + 1] = to_string((j))[0];
-				//cout << j;
-			else if (j == 9 && i != 0)
-				field[i][j] = '#';
-				//cout << "#";
-			else if (i == 11 && j != 0 && j != 10)
-				field[i][j] = '#';
-				//cout << "#";
-			//else
-				//cout << " ";
-
+		for (int j = 0; j < 12; j++) {
+			cout << f[i][j];
+		}
+		cout << endl;
+	}
+}
+void SeaWar::print_field(char f[12][12], char a[12][12]) {
+	for (int i = 0; i < 12; i++) {
+		for (int j = 0; j < 12; j++) {
+			cout << f[i][j];
 		}
 
+		cout << "		";
 
-
-
-
+		for (int k = 0; k < 12; k++) {
+			cout << a[i][k];
+		}
 		cout << endl;
 	}
 }
 
-bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], int cnt1[5]) {
+bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], int cnt1[5], char f[12][12]) {
 	int x0, y0, x1, y1;
 
 	x0 = x - 1;
@@ -61,10 +110,8 @@ bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[1
 	x1 = x + 1;
 	y1 = y + 1;
 
-	cnt1[size]++;
 	if (!(check_cnt_ship(cnt1, size)))
 		return false;
-	cnt1[size]--;
 
 	switch (a) {
 	case 's':
@@ -75,8 +122,10 @@ bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[1
 				return false;
 		}
 
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++) {
 			m[y + i][x] = size;
+			f[y + i+1][x+1] = '*';
+		}
 
 		y1 += size - 1;
 		break;
@@ -88,8 +137,10 @@ bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[1
 				return false;
 		}
 
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++) {
 			m[y][x - i] = size;
+			f[y + 1][x - i + 1] = '*';
+		}
 
 		x0 -= (size - 1);
 		break;
@@ -102,8 +153,10 @@ bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[1
 				return false;
 		}
 
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++) {
 			m[y - i][x] = size;
+			f[y - i + 1][x + 1] = '*';
+		}
 
 		y0 -= (size - 1);
 		break;
@@ -116,8 +169,10 @@ bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[1
 				return false;
 		}
 
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < size; i++) {
 			m[y][x + i] = size;
+			f[y + 1][x + i + 1] = '*';
+		}
 
 		x1 += size - 1;
 		break;
@@ -149,34 +204,35 @@ bool SeaWar::check_way(string s) {
 	return false;
 }
 
-void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
+void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][12]) {
 	int cnt = 0;
 	char symbol[4] = { 'n', 'e', 's', 'w' };
 	if (random) {
 		while (cnt != 1) {
-			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 4, m, cnt_ship))
+			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 4, m, cnt_ship, f))
 				cnt++;
 		}
 		while (cnt != 3) {
-			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 3, m, cnt_ship))
+			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 3, m, cnt_ship, f))
 				cnt++;
 		}
 		while (cnt != 6) {
-			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 2, m, cnt_ship))
+			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 2, m, cnt_ship, f))
 				cnt++;
 		}
 		while (cnt != 10) {
-			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 1, m, cnt_ship))
+			if (correct_ship_and_fill_array(rand() % 10, rand() % 10, symbol[rand() % 4], 1, m, cnt_ship, f))
 				cnt++;
 		}
 	}
 	else {
+		print_field(f);
 		int x0, y0, size;
 		char way[10];
 		cout << "Вы выбрали самостоятельное заполнение поля" << endl;
 		while (!correct_cnt_ship(cnt_ship)) {
-			cout << "Данные корабля: ";
-			//cout << "Введите координаты корабля(x, y),\nпалубность корабля(от 1 до 4), \nнаправление корабля от данных координат(w, e, n или s) (w-west(налево), e-east(направо), n-north(навверх), s-south(вниз):";
+			cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
+		
 			while (!(cin >> x0) ||
 				!(cin >> y0) ||
 				!(cin >> size) ||
@@ -188,15 +244,17 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5]) {
 				!(size >= 0) ||
 				!(cin >> way) ||
 				!(check_way(way)) ||
-				!(correct_ship_and_fill_array(x0, y0, way[0], size, m, cnt_ship))) {
+				!(correct_ship_and_fill_array(x0, y0, way[0], size, m, cnt_ship, f))) {
 
 				cin.clear();
 				cin.ignore();
-				//cout << "Вы совершили ошибку, выбрав неправильный формат введеных данных, или превышаете необходимое количество кораблей одного вида !" << endl;
-				cout << "Вы совершили ошибку!!!----------------------" << endl;
-				//cout << "Введите координаты корабля(x, y), \nнаправление корабля от данных координат(w, e, n или s) (w-west(налево), e-east(направо), n-north(навверх), s-south(вниз),\nпалубность корабля(от 1 до 4):";
-				cout << "Данные корабля: ";
+				system("cls");
+				print_field(f);
+				cout << "Вы совершили ошибку!!!" << endl;
+				cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
 			}
+			system("cls");
+			print_field(f);
 		}
 		cout << endl;
 		cout << "Поле заполнено";
