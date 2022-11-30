@@ -11,9 +11,8 @@ int main() {
 	srand(time(0));
 
 	SeaWar a = SeaWar();
-
-
-	cout << (char)(219);
+	
+	cout << a.zero_ship(true);
 
 
 }
