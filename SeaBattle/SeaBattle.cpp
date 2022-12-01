@@ -12,7 +12,6 @@ int main() {
 
 	SeaWar a = SeaWar();
 	
-	cout << a.zero_ship(true);
 
 
 }

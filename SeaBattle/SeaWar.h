@@ -11,22 +11,19 @@ class SeaWar {
 public:
 
 	bool debug;
-
-	//Игрок_1 ходит первым
 	bool player_1_move;
+
+	//Игрок_1 ходит пe;
 	//Рандомное поле
 	bool is_random_field;
-	//первый игрок попал
-	bool hit_player_1;
 	//второй игрок попал
-	bool hit_player_2;
-	//первый игрок уничтожил корабль
-	bool player_1_destroy;
+	//bool hit_player_2;
 	//второй игрок уничтожил корабль
-	bool player_2_destroy;
+	bool player_2_under_destroyed;
 	//прошлое попадание второго игрока
 	int hit_past_move[2];
-	char direction;
+	bool direction[5] = { true, true, true, true, true };
+	int hit_direction = 0;
 
 	//Поля для вывода на экран
 	char field_1[12][12];

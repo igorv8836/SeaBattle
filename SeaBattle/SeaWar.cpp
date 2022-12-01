@@ -1,5 +1,5 @@
 #include "SeaWar.h"
-
+#define TRUE FALSE
 SeaWar::SeaWar() {
 
 	for (int i = 0; i < 12; i++) {
@@ -10,8 +10,8 @@ SeaWar::SeaWar() {
 			field_attack_2[i][j] = ' ';
 		}
 	}
-	hit_player_2 = false;
-	player_2_destroy = false;
+	//hit_player_2 = false;
+	player_2_under_destroyed = false;
 
 	mode_selection_fill();
 	first_move();
@@ -30,6 +30,9 @@ SeaWar::SeaWar() {
 
 	while (!zero_ship(true) && !zero_ship(false)) {
 		int a = get_coord(player_1_move);
+		while (a == 110) {
+			a = get_coord(player_1_move);
+		}
 		int x = a / 10;
 		int y = a % 10;
 		attack(player_1_move, x, y);
@@ -46,154 +49,212 @@ SeaWar::SeaWar() {
 			system("cls");
 			print_field(field_1, field_attack_1);
 			print_field(field_2, field_attack_2);
+			int aaa = 10;
 		}
 	}
+
+	if (zero_ship(true))
+		cout << "Выиграл игрок 1";
+	else
+		cout << "Выиграл игрок 2";
 
 }
 
 
 int SeaWar::get_coord(bool player1) {
 	int x, y;
+	double x1, y1;
 	int a[2] = { 0, 0 };
 
 	if (player1) {
 		cout << "Стрелять в координату(x, y): ";
-		while (!(cin >> x) || !(cin >> y) || x > 9 || x < 0 || y > 9 || y < 0 || player1_attack[y][x] != 0) {
+		while (!(cin >> x1) || x1 - (int)(x1) != 0 || !(cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || field_attack_1[(int)(y1) + 1][(int)(x1) + 1] != ' ') {
 			cin.clear();
 			cin.ignore();
 			system("cls");
 			print_field(field_1, field_attack_1);
+			print_field(field_attack_2);
 			cout << "Вы ошиблись!" << endl;
 			cout << "Стрелять в координату(x, y): ";
 		}
+		x = x1;
+		y = y1;
 		a[0] = x;
 		a[1] = y;
 	}
 	else {
-		if (hit_player_2 && !player_2_destroy) {
+		if (player_2_under_destroyed) {
 			y = hit_past_move[1];
 			x = hit_past_move[0];
 
-			if (direction == 'n') {
-				if (y - 1 < 0) {
-					for (int i = 1; i < 4; i++) {
-						if (field_attack_2[y + i][x] != 0) {
-							a[0] = x;
-							a[1] = y + i;
-							hit_past_move[0] = x;
-							hit_past_move[1] = y + i;
-							break;
+			int direct;
+			do {
+				direct = 1 + rand() % 4;
+			} while (direction[direct] == false);
+
+			if (hit_direction != 0)
+				direct = hit_direction;
+			switch (direct) {
+			case 1:
+				for (int i = 1; i <= 3; i++) {
+					if (y - i < 0) {
+						direction[1] = false;
+						a[0] = 10;
+						a[1] = 10;
+						if (i != 1)
+							hit_direction = 3;
+						break;
+					}
+					else if (player2_attack[y - i][x] == 0) {
+						a[0] = x;
+						a[1] = y - i;
+						if (player1_ship[y - i][x] < 100) {
+							if (i != 1)
+								hit_direction = 3;
+							direction[1] = false;
 						}
+						else
+							hit_direction = 1;
+						break;
+					}
+					else if (player2_attack[y - i][x] == 1) {
+						direction[1] = false;
+						if (i == 1)
+							hit_direction = 0;
+						else
+							hit_direction = 3;
+						a[0] = 10;
+						a[1] = 10;
+						break;
+					}
+					else if (i == 3) {
+						hit_direction = 3;
+						direction[1] = false;
 					}
 				}
-				else {
-					a[0] = x;
-					a[1] = y - 1;
-					hit_past_move[0] = x;
-					hit_past_move[1] = y - 1;
-				}
-			}
-			else if (direction == 'e') {
-				if (x + 1 > 9) {
-					for (int i = 1; i < 4; i++) {
-						if (field_attack_2[y][x - i] != 0) {
-							a[0] = x - i;
-							a[1] = y;
-							hit_past_move[0] = x - i;
-							hit_past_move[1] = y;
-							break;
-						}
+				break;
+			case 2:
+				for (int i = 1; i <= 3; i++) {
+					if (x + i > 9) {
+						direction[2] = false;
+						a[0] = 10;
+						a[1] = 10;
+						if (i != 1)
+							hit_direction = 4;
+						break;
 					}
-				}
-				else {
-					a[0] = x + 1;
-					a[1] = y;
-					hit_past_move[0] = x + 1;
-					hit_past_move[1] = y;
-				}
-			}
-			else if (direction == 's') {
-				if (y + 1 < 9) {
-					for (int i = 1; i < 4; i++) {
-						if (field_attack_2[y - i][x] != 0) {
-							a[0] = x;
-							a[1] = y - i;
-							hit_past_move[0] = x;
-							hit_past_move[1] = y - i;
-							break;
+					else if (player2_attack[y][x + i] == 0) {
+						a[0] = x + i;
+						a[1] = y;
+						if (player1_ship[y][x + i] < 100) {
+							if (i != 1)
+								hit_direction = 4;
+							direction[2] = false;
 						}
+						else
+							hit_direction = 2;
+						break;
 					}
+					else if (player2_attack[y][x + i] == 1) {
+						direction[2] = false;
+						if (i == 1)
+							hit_direction = 0;
+						else
+							hit_direction = 4;
+						a[0] = 10;
+						a[1] = 10;
+						break;
+					}
+					else if (i == 3) {
+						hit_direction = 4;
+						direction[2] = false;
+					}
+
 				}
-				else {
-					a[0] = x;
-					a[1] = y + 1;
-					hit_past_move[0] = x;
-					hit_past_move[1] = y + 1;
-				}
-			}
-			else if (direction == 'w') {
-				if (x - 1 < 0) {
-					for (int i = 1; i < 4; i++) {
-						if (field_attack_2[y][x + i] != 0) {
-							a[0] = x + i;
-							a[1] = y;
-							hit_past_move[0] = x + i;
-							hit_past_move[1] = y;
-							break;
+				break;
+			case 3:
+				for (int i = 1; i <= 3; i++) {
+					if (y + i < 0) {
+						direction[3] = false;
+						a[0] = 10;
+						a[1] = 10;
+						if (i != 1)
+							hit_direction = 1;
+						break;
+					}
+					else if (player2_attack[y + i][x] == 0) {
+						a[0] = x;
+						a[1] = y + i;
+						if (player1_ship[y + i][x] < 100) {
+							if (i != 1)
+								hit_direction = 1;
+							direction[3] = false;
 						}
+						else
+							hit_direction = 3;
+						break;
 					}
+					else if (player2_attack[y][x + i] == 1) {
+						direction[3] = false;
+						if (i == 1)
+							hit_direction = 0;
+						else
+							hit_direction = 1;
+						a[0] = 10;
+						a[1] = 10;
+						break;
+					}
+					else if (i == 3) {
+						hit_direction = 1;
+						direction[3] = false;
+					}
+
 				}
-				else {
-					a[0] = x - 1;
-					a[1] = y;
-					hit_past_move[0] = x - 1;
-					hit_past_move[1] = y;
+				break;
+			case 4:
+				for (int i = 1; i <= 3; i++) {
+					if (x - i < 0) {
+						direction[4] = false;
+						a[0] = 10;
+						a[1] = 10;
+						if (i != 1)
+							hit_direction = 2;
+						break;
+					}
+					else if (player2_attack[y][x - i] == 0) {
+						a[0] = x - i;
+						a[1] = y;
+						if (player1_ship[y][x - i] < 100) {
+							if (i != 1)
+								hit_direction = 2;
+							direction[4] = false;
+						}
+						else
+							hit_direction = 4;
+						break;
+					}
+					else if (player2_attack[y][x - i] == 1) {
+						direction[4] = false;
+						if (i == 1)
+							hit_direction = 0;
+						else
+							hit_direction = 2;
+						a[0] = 10;
+						a[1] = 10;
+						break;
+					}
+					else if (i == 3) {
+						hit_direction = 2;
+						direction[4] = false;
+					}
+
 				}
+				break;
+			default:
+				system("pause");
 			}
-			//north
-			else if (y - 1 >= 0 && field_attack_2[y - 1][x] == 0) {
-				a[0] = x;
-				a[1] = y - 1;
-				if (player1_ship[y - 1][x] != 0 && player1_ship[y - 1][x] != 5) {
-					direction = 'n';
-				}
-				else {
-					direction = 's';
-				}
-			}
-			//east
-			else if (x + 1 <= 9 && field_attack_2[y][x + 1] == 0) {
-				a[0] = x + 1;
-				a[1] = y;
-				if (player1_ship[y][x + 1] != 0 && player1_ship[y][x + 1] != 5) {
-					direction = 'e';
-				}
-				else {
-					direction = 'w';
-				}
-			}
-			//south
-			else if (y + 1 <= 9 && field_attack_2[y + 1][x] == 0) {
-				a[0] = x;
-				a[1] = y + 1;
-				if (player1_ship[y + 1][x] != 0 && player1_ship[y + 1][x] != 5) {
-					direction = 's';
-				}
-				else {
-					direction = 'n';
-				}
-			}
-			//west
-			else if (x - 1 >= 0 && field_attack_2[y][x - 1] == 0) {
-				a[0] = x - 1;
-				a[1] = y;
-				if (player1_ship[y][x - 1] != 0 && player1_ship[y][x - 1] != 5) {
-					direction = 'w';
-				}
-				else {
-					direction = 'e';
-				}
-			}
+
+
 		}
 		else {
 			do {
@@ -210,26 +271,31 @@ int SeaWar::get_coord(bool player1) {
 void SeaWar::attack(bool player1, int x, int y) {
 	if (player1) {
 		if (player2_ship[y][x] != 0 && player2_ship[y][x] != 5) {
-			player1_attack[y][x] = 1;
+			player1_attack[y][x] = 2;
 			field_attack_1[y + 1][x + 1] = 'X';
 		}
 		else {
+			player1_attack[y][x] = 1;
 			field_attack_1[y + 1][x + 1] = '*';
-			player_1_move = !player_1_move;
+			player_1_move = !player_1_move; 
 		}
 	}
 	else {
 		if (player1_ship[y][x] != 0 && player1_ship[y][x] != 5) {
-			player2_attack[y][x] = 1;
+			player2_attack[y][x] = 2;
 			field_attack_2[y + 1][x + 1] = 'X';
-			hit_player_2 = true;
-			hit_past_move[0] = x;
-			hit_past_move[1] = y;
+			if (!player_2_under_destroyed) {
+				player_2_under_destroyed = true;
+				//hit_player_2 = true;
+				hit_past_move[0] = x;
+				hit_past_move[1] = y;
+			}
 		}
 		else {
 			field_attack_2[y + 1][x + 1] = '*';
+			player2_attack[y][x] = 1;
 			player_1_move = !player_1_move;
-			hit_player_2 = false;
+			//hit_player_2 = false;
 		}
 	}
 }
@@ -242,14 +308,17 @@ void SeaWar::destroy_ship(int x, int y, int m[10][10], int a[10][10], bool playe
 	int x1 = 0;
 	int y0 = 0;
 	int y1 = 0;
-	if (direct == 1 || direct == 3) {
+	if (m[y][x] == 0 || m[y][x] == 5) {
+		destroy = false;
+	}
+	else if (direct == 1 || direct == 3) {
 		x0 = x;
 		x1 = x;
 		y0 = y - m[y][x] % 10 + 1;
 		y1 = y + cnt - m[y][x] % 10;
 
 		for (int i = y0; i <= y1; i++) {
-			if (a[i][x] == 0) {
+			if (a[i][x] == 0 || a[i][x] == 5) {
 				destroy = false;
 				break;
 			}
@@ -262,12 +331,13 @@ void SeaWar::destroy_ship(int x, int y, int m[10][10], int a[10][10], bool playe
 		y1 = y;
 
 		for (int i = x0; i <= x1; i++) {
-			if (a[y][i] == 0) {
+			if (a[y][i] == 0 || a[y][i] == 5) {
 				destroy = false;
 				break;
 			}
 		}
 	}
+
 	if (destroy) {
 		int x_d0 = x0 - 1;
 		int x_d1 = x1 + 1;
@@ -284,13 +354,13 @@ void SeaWar::destroy_ship(int x, int y, int m[10][10], int a[10][10], bool playe
 
 		for (int i = x_d0; i <= x_d1; i++) {
 			for (int j = y_d0; j <= y_d1; j++) {
-				a[j][i] = '*';
+				a[j][i] = 1;
 				if (player1)
 					field_attack_1[j + 1][i + 1] = '*';
 				else
 					field_attack_2[j + 1][i + 1] = '*';
 				if (m[j][i] != 0 && m[j][i] != 5) {
-					a[j][i] = 'X';
+					a[j][i] = 2;
 					if (player1)
 						field_attack_1[j + 1][i + 1] = 'X';
 					else
@@ -298,41 +368,36 @@ void SeaWar::destroy_ship(int x, int y, int m[10][10], int a[10][10], bool playe
 				}
 			}
 		}
+
+		if (!player_1_move) {
+			player_2_under_destroyed = false;
+			//hit_player_2 = false;
+			hit_direction = 0;
+			for (int i = 0; i < 5; i++)
+				direction[i] = true;
+		}
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void SeaWar::mode_selection_fill() {
+	double s;
 	cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
-	while (!(cin >> is_random_field)) {
+	while (!(cin >> s) || !(s == 1 || s == 0)) {
 		cin.clear();
 		cin.ignore();
 		system("cls");
 		cout << "Вы допустили ошибку!" << endl;
 		cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
 	}
+	if (s == 1)
+		is_random_field = true;
+	else
+		is_random_field = false;
 }
 void SeaWar::first_move() {
+	double s;
 	cout << "Вы ходите первым? (1-да, 0-нет): ";
-	while (!(cin >> player_1_move)) {
+	while (!(cin >> s) || !(s == 1 || s == 0)) {
 		cin.clear();
 		cin.ignore();
 
@@ -341,6 +406,10 @@ void SeaWar::first_move() {
 		cout << "Вы ходите первым? (1-да, 0-нет): ";
 
 	}
+	if (s == 1)
+		player_1_move = true;
+	else
+		player_1_move = false;
 	system("cls");
 }
 
@@ -505,9 +574,7 @@ bool SeaWar::zero_ship(bool player1){
 	if (player1) {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
-				if (player1_attack[i][j] != 0 && 
-					player2_ship[i][j] != 5 && 
-					player2_ship[i][j] != 0) {
+				if (player1_attack[i][j] == 2) {
 					cnt++;
 				}
 			}
@@ -516,9 +583,7 @@ bool SeaWar::zero_ship(bool player1){
 	else {
 		for (int i = 0; i < 10; i++) {
 			for (int j = 0; j < 10; j++) {
-				if (player2_attack[i][j] != 0 &&
-					player1_ship[i][j] != 5 &&
-					player1_ship[i][j] != 0) {
+				if (player2_attack[i][j] == 2) {
 					cnt++;
 				}
 			}
@@ -558,23 +623,31 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][1
 	else {
 		print_field(f);
 		int x0, y0, size;
-		char way[10];
+		double x00, y00, size0;
+		
+		string way;
 		cout << "Вы выбрали самостоятельное заполнение поля" << endl;
 		while (!correct_cnt_ship(cnt_ship, false)) {
 			cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
 		
-			while (!(cin >> x0) ||
-				!(cin >> y0) ||
-				!(cin >> size) ||
-				!(x0 >= 0) ||
-				!(x0 <= 9) ||
-				!(y0 >= 0) ||
-				!(y0 <= 9) ||
-				!(size <= 4) ||
-				!(size >= 0) ||
+			while (!(cin >> x00) ||
+				!(cin >> y00) ||
+				!(cin >> size0) ||
+				x00 - (int)(x00) != 0 ||
+				y00 - (int)(y00) != 0 ||
+				size0 - (int)(size0) != 0 ||
+				!(x00 >= 0) ||
+				!(x00 <= 9) ||
+				!(y00 >= 0) ||
+				!(y00 <= 9) ||
+				!(size0 <= 4) ||
+				!(size0 >= 0) ||
 				!(cin >> way) ||
 				!(check_way(way)) ||
-				!(correct_ship_and_fill_array(x0, y0, way[0], size, m, cnt_ship, f))) {
+				!(correct_ship_and_fill_array((int)(x00), 
+					(int)(y00), 
+					way[0], 
+					(int)(size0), m, cnt_ship, f))) {
 
 				cin.clear();
 				cin.ignore();
@@ -583,6 +656,9 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][1
 				cout << "Вы совершили ошибку!!!" << endl;
 				cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
 			}
+			x0 = x00;
+			y0 = y00;
+			size = size0;
 			system("cls");
 			print_field(f);
 		}
