@@ -1,5 +1,4 @@
 #include "SeaWar.h"
-#define TRUE FALSE
 SeaWar::SeaWar() {
 
 	for (int i = 0; i < 12; i++) {
@@ -68,7 +67,7 @@ int SeaWar::get_coord(bool player1) {
 
 	if (player1) {
 		cout << "Стрелять в координату(x, y): ";
-		while (!(cin >> x1) || x1 - (int)(x1) != 0 || !(cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || field_attack_1[(int)(y1) + 1][(int)(x1) + 1] != ' ') {
+		while (!(cin >> x1) || x1 - (int)(x1) != 0 || !(cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || player1_attack[(int)(y1)][(int)(x1)] != 0) {
 			cin.clear();
 			cin.ignore();
 			system("cls");
@@ -194,7 +193,7 @@ int SeaWar::get_coord(bool player1) {
 							hit_direction = 3;
 						break;
 					}
-					else if (player2_attack[y][x + i] == 1) {
+					else if (player2_attack[y + i][x] == 1) {
 						direction[3] = false;
 						if (i == 1)
 							hit_direction = 0;
@@ -253,6 +252,7 @@ int SeaWar::get_coord(bool player1) {
 			default:
 				system("pause");
 			}
+			int a123123 = 0;
 
 
 		}
