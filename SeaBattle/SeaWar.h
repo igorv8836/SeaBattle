@@ -4,10 +4,18 @@
 #include <cstdlib>
 #include <string>
 #include <vector>
-using namespace std;
+//#include <SFML/Graphics.hpp>
+
+//using namespace sf;
 
 class SeaWar {
 public:
+
+	bool move_recieved;
+	int coord_player_1[2];
+
+
+
 	bool debug = 1;
 	int k = 0;
 	//»грок_1 ходит?;
@@ -46,7 +54,7 @@ public:
 	//получение координат дл€ атаки от человека свой алгоритм, от бота свой алгоритм
 	int get_coord(bool player1);
 	//проверка ввода направлени€ корабл€ при генерации кораблей человеком
-	bool check_way(string s);
+	bool check_way(std::string s);
 	//количество кораблей == максимуму тогда true, дл€ генерации пол€
 	bool correct_cnt_ship(int a[5]);
 	//ѕроверка координат, в которую хот€т поставить корабль, если подходит, то ставит и заполн€ет необходимые массивы
@@ -57,6 +65,7 @@ public:
 	void destroy_ship(int x, int y, int m[10][10], int a[10][10], bool player1);
 	//функци€, котора€ вли€ет на смену хода, при промахе, заполн€ет необходимые массивы дл€ корректной работы
 	void attack(bool player1, int x, int y);
+	void next_move();
 
 	//заполнение пол€ корабл€ми, пока количетсво != максимуму
 	void fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][12]);	
@@ -68,4 +77,5 @@ public:
 	void mode_selection_fill();
 	//выбор первого хода
 	void first_move();
+	void graphic_print();
 };

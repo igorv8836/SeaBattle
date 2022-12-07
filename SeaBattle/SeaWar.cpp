@@ -2,6 +2,7 @@
 //инициализация игры
 SeaWar::SeaWar() {
 
+	move_recieved = false;
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++) {
 			field_1[i][j] = ' ';
@@ -24,53 +25,25 @@ SeaWar::SeaWar() {
 	print_field(field_1, field_attack_1);
 	//конец инициализации игры
 	//начало игры
-	while (!zero_ship(true) && !zero_ship(false)) {
-		k = 0;
-		int a = get_coord(player_1_move);
-		//если a == 110, то координаты для бота создаются новые, но с другими условиями
-		while (a == 110) {
-			k++;
-			a = get_coord(player_1_move);
+	//while (!zero_ship(true) && !zero_ship(false)) {
 
-			//защита от бесконечного цикла, для отладки было полезно, когда находил баги
-			if (k == 200) {
-				system("pause");
-				break;
-			}
-		}
-		int x = a / 10;
-		int y = a % 10;
-		attack(player_1_move, x, y);
-		destroy_ship(x, y, player2_ship, player1_attack, player_1_move);
-		destroy_ship(x, y, player1_ship, player2_attack, player_1_move);
-		if (player_1_move) {
-			system("cls");
-			print_field(field_1, field_attack_1);
-			//if ()
-			print_field(field_2, field_attack_2);
-		}
-		else {
-			system("cls");
-			print_field(field_1, field_attack_1);
-			print_field(field_2, field_attack_2);
-		}
-	}
+	//}
 
-	if (zero_ship(true))
-		cout << "Выиграл игрок 1";
-	else
-		cout << "Выиграл игрок 2";
+	//if (zero_ship(true))
+	//	std::cout << "Выиграл игрок 1";
+	//else
+	//	std::cout << "Выиграл игрок 2";
 }
 //методы, необходимые для настроек игры, вызываются при инициализации
 void SeaWar::mode_selection_fill() {
 	double s;
-	cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
-	while (!(cin >> s) || !(s == 1 || s == 0)) {
-		cin.clear();
-		cin.ignore();
+	std::cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
+	while (!(std::cin >> s) || !(s == 1 || s == 0)) {
+		std::cin.clear();
+		std::cin.ignore();
 		system("cls");
-		cout << "Вы допустили ошибку!" << endl;
-		cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
+		std::cout << "Вы допустили ошибку!" << std::endl;
+		std::cout << "Выберите режим расставления кораблей(1-рандомно, 0-заполняет игрок): ";
 	}
 	if (s == 1)
 		is_random_field = true;
@@ -79,13 +52,13 @@ void SeaWar::mode_selection_fill() {
 }
 void SeaWar::first_move() {
 	double s;
-	cout << "Вы ходите первым? (1-да, 0-нет): ";
-	while (!(cin >> s) || !(s == 1 || s == 0)) {
-		cin.clear();
-		cin.ignore();
+	std::cout << "Вы ходите первым? (1-да, 0-нет): ";
+	while (!(std::cin >> s) || !(s == 1 || s == 0)) {
+		std::cin.clear();
+		std::cin.ignore();
 		system("cls");
-		cout << "Вы допустили ошибку!" << endl;
-		cout << "Вы ходите первым? (1-да, 0-нет): ";
+		std::cout << "Вы допустили ошибку!std::" << std::endl;
+		std::cout << "Вы ходите первым? (1-да, 0-нет): ";
 	}
 	if (s == 1)
 		player_1_move = true;
@@ -132,7 +105,7 @@ bool SeaWar::zero_ship(bool player1) {
 		return true;
 	return false;
 }
-bool SeaWar::check_way(string s) {
+bool SeaWar::check_way(std::string s) {
 	if (s.length() == 1 && (s[0] == 'e' || s[0] == 's' || s[0] == 'w' || s[0] == 'n'))
 		return true;
 	return false;
@@ -142,8 +115,8 @@ void SeaWar::start_map(char a[12][12]) {
 	for (int i = 1; i < 11; i++) {
 		for (int j = 0; j < 12; j++)
 			a[i][j] = ' ';
-		a[0][i] = to_string((i - 1))[0];
-		a[i][0] = to_string((i - 1))[0];
+		a[0][i] = std::to_string((i - 1))[0];
+		a[i][0] = std::to_string((i - 1))[0];
 		a[i][11] = '|';
 		a[11][i] = '–';
 	}
@@ -154,22 +127,22 @@ void SeaWar::start_map(char a[12][12]) {
 void SeaWar::print_field(char f[12][12]) {
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++)
-			cout << f[i][j];
-		cout << endl;
+			std::cout << f[i][j];
+		std::cout << std::endl;
 	}
 }
 void SeaWar::print_field(char f[12][12], char a[12][12]) {
 	for (int i = 0; i < 12; i++) {
 		for (int j = 0; j < 12; j++)
-			cout << f[i][j];
-		cout << "		";
+			std::cout << f[i][j];
+		std::cout << "		";
 
 		for (int k = 0; k < 12; k++)
-			cout << a[i][k];
-		cout << endl;
+			std::cout << a[i][k];
+		std::cout << std::endl;
 	}
 }
-//методы для заполнения поля
+//методы для заполнения поля кораблями
 bool SeaWar::correct_ship_and_fill_array(int x, int y, char a, int size, int m[10][10], int cnt1[5], char f[12][12]) {
 	int x0, y0, x1, y1;
 
@@ -289,14 +262,14 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][1
 		int x0, y0, size;
 		double x00, y00, size0;
 
-		string way;
-		cout << "Вы выбрали самостоятельное заполнение поля" << endl;
+		std::string way;
+		std::cout << "Вы выбрали самостоятельное заполнение поля" << std::endl;
 		while (!correct_cnt_ship(cnt_ship)) {
-			cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
+			std::cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
 
-			while (!(cin >> x00) ||
-				!(cin >> y00) ||
-				!(cin >> size0) ||
+			while (!(std::cin >> x00) ||
+				!(std::cin >> y00) ||
+				!(std::cin >> size0) ||
 				x00 - (int)(x00) != 0 ||
 				y00 - (int)(y00) != 0 ||
 				size0 - (int)(size0) != 0 ||
@@ -306,19 +279,19 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][1
 				!(y00 <= 9) ||
 				!(size0 <= 4) ||
 				!(size0 >= 0) ||
-				!(cin >> way) ||
+				!(std::cin >> way) ||
 				!(check_way(way)) ||
 				!(correct_ship_and_fill_array((int)(x00),
 					(int)(y00),
 					way[0],
 					(int)(size0), m, cnt_ship, f))) {
 
-				cin.clear();
-				cin.ignore();
+				std::cin.clear();
+				std::cin.ignore();
 				system("cls");
 				print_field(f);
-				cout << "Вы совершили ошибку!!!" << endl;
-				cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
+				std::cout << "Вы совершили ошибку!!!" << std::endl;
+				std::cout << "Данные корабля(x, y, size, course(e, w, s или n): ";
 			}
 			x0 = x00;
 			y0 = y00;
@@ -326,31 +299,40 @@ void SeaWar::fill_ship(bool random, int m[10][10], int cnt_ship[5], char f[12][1
 			system("cls");
 			print_field(f);
 		}
-		cout << endl;
-		cout << "Поле заполнено";
+		std::cout << std::endl;
+		std::cout << "Поле заполнено";
 	}
 }
 //методы для механики боя
 int SeaWar::get_coord(bool player1) {
 	int x, y;
-	double x1, y1;
 	int a[2] = { 0, 0 };
 
 	if (player1) {
-		cout << "Стрелять в координату(x, y): ";
-		while (!(cin >> x1) || x1 - (int)(x1) != 0 || !(cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || player1_attack[(int)(y1)][(int)(x1)] != 0) {
-			cin.clear();
-			cin.ignore();
-			system("cls");
-			print_field(field_1, field_attack_1);
-			print_field(field_attack_2);
-			cout << "Вы ошиблись!" << endl;
-			cout << "Стрелять в координату(x, y): ";
-		}
-		x = x1;
-		y = y1;
+		//std::cout << "Стрелять в координату(x, y): ";
+		//while (!(std::cin >> x1) || x1 - (int)(x1) != 0 || !(std::cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || player1_attack[(int)(y1)][(int)(x1)] != 0) {
+		//	std::cin.clear();
+		//	std::cin.ignore();
+		//	system("cls");
+		//	print_field(field_1, field_attack_1);
+		//	print_field(field_attack_2);
+		//	std::cout << "Вы ошиблись!" << std::endl;
+		//	std::cout << "Стрелять в координату(x, y): ";
+		//}
+		//x = x1;
+		//y = y1;
+		//a[0] = x;
+		//a[1] = y;
+		x = coord_player_1[0];
+		y = coord_player_1[1];
 		a[0] = x;
 		a[1] = y;
+
+		if (x > 9 || x < 0 || y > 9 || y < 0 || player1_attack[(int)(y)][(int)(x)] != 0) {
+			move_recieved = false;
+		}
+		else
+			move_recieved = true;
 	}
 	else {
 		if (player_2_under_destroyed) {
@@ -638,6 +620,41 @@ void SeaWar::destroy_ship(int x, int y, int m[10][10], int a[10][10], bool playe
 			hit_direction = 0;
 			for (int i = 0; i < 5; i++)
 				direction[i] = true;
+		}
+	}
+}
+void SeaWar::next_move() {
+	move_recieved = false;
+	k = 0;
+	int a = get_coord(player_1_move);
+	//если a == 110, то координаты для бота создаются новые, но с другими условиями
+	while (a == 110) {
+		k++;
+		a = get_coord(player_1_move);
+
+		//защита от бесконечного цикла, для отладки было полезно, когда находил баги
+		if (k == 200) {
+			continue;
+			//system("pause");
+			//break;
+		}
+	}
+	if (move_recieved || !player_1_move) {
+		int x = a / 10;
+		int y = a % 10;
+		attack(player_1_move, x, y);
+		destroy_ship(x, y, player2_ship, player1_attack, player_1_move);
+		destroy_ship(x, y, player1_ship, player2_attack, player_1_move);
+		if (player_1_move) {
+			system("cls");
+			print_field(field_1, field_attack_1);
+			//if ()
+			print_field(field_2, field_attack_2);
+		}
+		else {
+			system("cls");
+			print_field(field_1, field_attack_1);
+			print_field(field_2, field_attack_2);
 		}
 	}
 }
