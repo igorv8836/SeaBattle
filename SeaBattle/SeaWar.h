@@ -11,14 +11,15 @@
 class SeaWar {
 public:
 
+	//получены ли координаты для стрельбы от первого игрока нажатием кнопки мыши
 	bool move_recieved;
+	//полученные координаты
 	int coord_player_1[2];
 
-
-
-	bool debug = 1;
+	bool debug = true;
+	//было полезно для отладки
 	int k = 0;
-	//Игрок_1 ходит?;
+	//Игрок_1 ходит?
 	bool player_1_move;
 	//Рандомное поле
 	bool is_random_field;

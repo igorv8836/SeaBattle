@@ -23,16 +23,10 @@ SeaWar::SeaWar() {
 	fill_ship(true, player2_ship, cnt_ship_2, field_2);
 	fill_ship(is_random_field, player1_ship, cnt_ship_1, field_1);
 	print_field(field_1, field_attack_1);
+	if (debug){
+		print_field(field_2, field_attack_2);
+	}
 	//конец инициализации игры
-	//начало игры
-	//while (!zero_ship(true) && !zero_ship(false)) {
-
-	//}
-
-	//if (zero_ship(true))
-	//	std::cout << "Выиграл игрок 1";
-	//else
-	//	std::cout << "Выиграл игрок 2";
 }
 //методы, необходимые для настроек игры, вызываются при инициализации
 void SeaWar::mode_selection_fill() {
@@ -309,20 +303,6 @@ int SeaWar::get_coord(bool player1) {
 	int a[2] = { 0, 0 };
 
 	if (player1) {
-		//std::cout << "Стрелять в координату(x, y): ";
-		//while (!(std::cin >> x1) || x1 - (int)(x1) != 0 || !(std::cin >> y1) || y1 - (int)(y1) != 0 || x1 > 9 || x1 < 0 || y1 > 9 || y1 < 0 || player1_attack[(int)(y1)][(int)(x1)] != 0) {
-		//	std::cin.clear();
-		//	std::cin.ignore();
-		//	system("cls");
-		//	print_field(field_1, field_attack_1);
-		//	print_field(field_attack_2);
-		//	std::cout << "Вы ошиблись!" << std::endl;
-		//	std::cout << "Стрелять в координату(x, y): ";
-		//}
-		//x = x1;
-		//y = y1;
-		//a[0] = x;
-		//a[1] = y;
 		x = coord_player_1[0];
 		y = coord_player_1[1];
 		a[0] = x;
@@ -648,13 +628,16 @@ void SeaWar::next_move() {
 		if (player_1_move) {
 			system("cls");
 			print_field(field_1, field_attack_1);
-			//if ()
-			print_field(field_2, field_attack_2);
+			if (debug) {
+				print_field(field_2, field_attack_2);
+			}
 		}
 		else {
 			system("cls");
 			print_field(field_1, field_attack_1);
-			print_field(field_2, field_attack_2);
+			if (debug) {
+				print_field(field_2, field_attack_2);
+			}
 		}
 	}
 }

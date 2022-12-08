@@ -73,18 +73,16 @@ int init() {
         if (flag)
             f.next_move();
 
-        //обработка нажатий, для управления стельбой
+        //обработка нажатий, для управления стрельбой
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
             localPosition = sf::Mouse::getPosition(window);
-            //std::cout << localPosition.x << "-" << localPosition.y << std::endl;
             x = localPosition.x;
             y = localPosition.y;
             if (x > 540 && x < 940 && y > 80 && y < 480) {
                 f.coord_player_1[0] = (localPosition.x - 540) / 40;
                 f.coord_player_1[1] = (localPosition.y - 80) / 40;
             }
-            //std::cout << f.coord_player_1[0] << "-" << f.coord_player_1[1] << std::endl;
         }
 
         //рисование
@@ -92,6 +90,7 @@ int init() {
         window.draw(text);
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
+                //рисование первого поля
                 if (f.player1_ship[y][x] > 100)
                     rect.setFillColor(sf::Color::Red);
                 else
@@ -99,7 +98,7 @@ int init() {
                 rect.setPosition(40 + x * 40, 80 + y * 40);
                 window.draw(rect);
 
-
+                //рисование второго поля
                 if (f.player1_attack[y][x] == 2)
                     rect.setFillColor(sf::Color::Red);
                 else if (f.player1_attack[y][x] == 1)
@@ -109,7 +108,7 @@ int init() {
                 rect.setPosition(540 + x * 40, 80 + y * 40);
                 window.draw(rect);
 
-
+                //рисование третьего поля
                 if (f.player2_attack[y][x] == 2)
                     rect.setFillColor(sf::Color::Red);
                 else if (f.player2_attack[y][x] == 1)
@@ -119,6 +118,7 @@ int init() {
                 rect.setPosition(1040 + x * 40, 80 + y * 40);
                 window.draw(rect);
 
+                //изменение статуса текста
                 if (f.zero_ship(true) || f.zero_ship(false)) {
                     flag = false;
                     text.setFillColor(sf::Color::Blue);
