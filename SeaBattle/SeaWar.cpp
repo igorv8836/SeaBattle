@@ -623,8 +623,10 @@ void SeaWar::next_move() {
 		int x = a / 10;
 		int y = a % 10;
 		attack(player_1_move, x, y);
-		destroy_ship(x, y, player2_ship, player1_attack, player_1_move);
-		destroy_ship(x, y, player1_ship, player2_attack, player_1_move);
+		if (player_1_move)
+			destroy_ship(x, y, player2_ship, player1_attack, player_1_move);
+		else
+			destroy_ship(x, y, player1_ship, player2_attack, player_1_move);
 		if (player_1_move) {
 			system("cls");
 			print_field(field_1, field_attack_1);
